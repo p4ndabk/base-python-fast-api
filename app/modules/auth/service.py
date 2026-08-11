@@ -16,6 +16,7 @@ from app.core.security import (
     verify_password,
 )
 from app.modules.auth.schemas import TokenPair
+from app.modules.roles.repository import RoleRepository
 from app.modules.users.models import UserModel
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import UserCreate
@@ -23,9 +24,9 @@ from app.modules.users.service import UserService
 
 
 class AuthService:
-    def __init__(self, user_repository: UserRepository) -> None:
+    def __init__(self, user_repository: UserRepository, role_repository: RoleRepository) -> None:
         self.user_repository = user_repository
-        self.user_service = UserService(user_repository)
+        self.user_service = UserService(user_repository, role_repository)
 
     async def register(self, data: UserCreate) -> UserModel:
         """Registro publico: reaproveita integralmente a regra de criacao de usuario."""
@@ -61,8 +62,16 @@ class AuthService:
         return self._issue_tokens(user)
 
     def _issue_tokens(self, user: UserModel) -> TokenPair:
+        # RN-AUTH-006: role/permissions vao no access token so como claims de
+        # introspeccao - `user.role` ja vem carregado (lazy="selectin" no
+        # model), sempre refletindo o estado atual no momento da emissao.
+        role_name = user.role.name if user.role else None
+        permission_codes = [p.code for p in user.role.permissions] if user.role else []
+
         return TokenPair(
-            access_token=create_access_token(str(user.id)),
+            access_token=create_access_token(
+                str(user.id), role=role_name, permissions=permission_codes
+            ),
             refresh_token=create_refresh_token(str(user.id)),
             expires_in=settings.access_token_expire_minutes * 60,
         )

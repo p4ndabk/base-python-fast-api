@@ -16,6 +16,8 @@ from app.core.config import settings
 from app.database.base import Base
 
 # --- Registro dos models (o autogenerate depende destes imports) -------------
+from app.modules.permissions import models as permissions_models  # noqa: F401
+from app.modules.roles import models as roles_models  # noqa: F401
 from app.modules.users import models as users_models  # noqa: F401
 
 # from app.modules.products import models as products_models  # noqa: F401  <- proximo modulo

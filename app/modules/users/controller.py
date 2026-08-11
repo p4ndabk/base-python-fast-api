@@ -9,6 +9,7 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.schemas import Page
+from app.modules.roles.repository import RoleRepository
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import UserCreate, UserRead, UserUpdate
 from app.modules.users.service import UserService
@@ -16,7 +17,7 @@ from app.modules.users.service import UserService
 
 class UserController:
     def __init__(self, session: AsyncSession) -> None:
-        self.service = UserService(UserRepository(session))
+        self.service = UserService(UserRepository(session), RoleRepository(session))
 
     async def create(self, data: UserCreate) -> UserRead:
         user = await self.service.create(data)

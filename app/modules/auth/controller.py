@@ -4,13 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.schemas import TokenPair
 from app.modules.auth.service import AuthService
+from app.modules.roles.repository import RoleRepository
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import UserCreate, UserRead
 
 
 class AuthController:
     def __init__(self, session: AsyncSession) -> None:
-        self.service = AuthService(UserRepository(session))
+        self.service = AuthService(UserRepository(session), RoleRepository(session))
 
     async def register(self, data: UserCreate) -> UserRead:
         user = await self.service.register(data)

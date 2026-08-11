@@ -8,6 +8,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
+from app.modules.roles.schemas import RoleRead
+
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., examples=["maria@exemplo.com"])
@@ -26,12 +28,17 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(BaseModel):
-    """Atualizacao parcial: todos os campos sao opcionais."""
+    """Atualizacao parcial: todos os campos sao opcionais.
+
+    `role_id` e tri-state: ausente do payload = nao mexe na role; `null`
+    explicito = remove a role; uuid = troca a role (RN-USERS-005).
+    """
 
     email: EmailStr | None = None
     full_name: str | None = Field(default=None, min_length=2, max_length=255)
     password: str | None = Field(default=None, min_length=8, max_length=128)
     is_active: bool | None = None
+    role_id: uuid.UUID | None = None
 
     @field_validator("email")
     @classmethod
@@ -49,5 +56,10 @@ class UserRead(UserBase):
 
     id: uuid.UUID
     is_active: bool
+    role_id: uuid.UUID | None
+    # RN-USERS-006: role aninhada (nome + permissions), nao so o id - poupa
+    # o cliente de um GET /roles/{role_id} extra so para saber o que o
+    # usuario pode fazer.
+    role: RoleRead | None
     created_at: datetime
     updated_at: datetime

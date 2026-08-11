@@ -116,6 +116,81 @@ async def test_atualiza_usuario(client: AsyncClient, auth_headers: dict[str, str
     assert response.json()["full_name"] == "Pedro Souza"
 
 
+async def test_atribui_role_a_usuario(client: AsyncClient, admin_headers: dict[str, str]) -> None:
+    """RN-USERS-005: role_id valido e aceito e refletido no usuario."""
+    role = await client.post("/roles", json={"name": "operator"}, headers=admin_headers)
+    role_id = role.json()["id"]
+
+    created = await client.post(
+        "/users",
+        json={"email": "operador@exemplo.com", "full_name": "Operador", "password": "senha12345"},
+    )
+    user_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/users/{user_id}", json={"role_id": role_id}, headers=admin_headers
+    )
+
+    assert response.status_code == 200
+    assert response.json()["role_id"] == role_id
+
+
+async def test_user_read_traz_role_aninhada(
+    client: AsyncClient, admin_headers: dict[str, str]
+) -> None:
+    """RN-USERS-006: UserRead traz role com nome e permissions, nao so o id."""
+    role = await client.post("/roles", json={"name": "operator"}, headers=admin_headers)
+    role_id = role.json()["id"]
+
+    created = await client.post(
+        "/users",
+        json={"email": "aninhado@exemplo.com", "full_name": "Aninhado", "password": "senha12345"},
+    )
+    user_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/users/{user_id}", json={"role_id": role_id}, headers=admin_headers
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["role_id"] == role_id
+    assert body["role"]["name"] == "operator"
+    assert body["role"]["permissions"] == []
+
+
+async def test_user_sem_role_traz_role_null(
+    client: AsyncClient, user_payload: dict[str, str]
+) -> None:
+    """RN-USERS-006: usuario sem role_id traz role = null."""
+    response = await client.post("/users", json=user_payload)
+
+    assert response.json()["role_id"] is None
+    assert response.json()["role"] is None
+
+
+async def test_atribuir_role_inexistente_retorna_404(
+    client: AsyncClient, auth_headers: dict[str, str]
+) -> None:
+    """RN-USERS-005: role_id que nao existe e rejeitado."""
+    created = await client.post(
+        "/users",
+        json={
+            "email": "operador2@exemplo.com",
+            "full_name": "Operador 2",
+            "password": "senha12345",
+        },
+    )
+    user_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/users/{user_id}", json={"role_id": str(uuid.uuid4())}, headers=auth_headers
+    )
+
+    assert response.status_code == 404
+    assert response.json()["error"]["details"]["code"] == "ROLE_NOT_FOUND"
+
+
 async def test_remove_usuario(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await client.post(
         "/users",
