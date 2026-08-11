@@ -46,3 +46,12 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Se violada:** token expirado → `UnauthorizedError` → HTTP 401.
 **Onde vive:** `app/core/security.py` (`create_access_token`, `create_refresh_token`) + `app/core/config.py`
 **Teste:** `tests/test_auth.py::test_registra_e_faz_login` (valida `expires_in`)
+
+---
+
+### RN-AUTH-006 — Access token carrega role/permissions como claims, mas autorização nunca decide por elas
+**Regra:** o access token JWT emitido no login e no refresh carrega as claims `role` (nome ou `null`) e `permissions` (lista de codes), refletindo o estado do usuário no momento da emissão. Essas claims são só para leitura/introspecção — `RequirePermission` (em `app/api/deps.py`) nunca as lê; sempre consulta a role/permissions atuais do usuário no banco.
+**Quando:** emissão de token (`login`, `refresh`) e toda checagem de `RequirePermission`.
+**Se violada:** não gera erro HTTP — o risco é revogação/troca de role não ter efeito imediato caso a checagem um dia passe a confiar nas claims por engano.
+**Onde vive:** `app/core/security.py` (`create_access_token`) + `app/modules/auth/service.py` (`_issue_tokens`) + `app/api/deps.py` (`RequirePermission`, que ignora as claims)
+**Teste:** `tests/test_auth.py::test_access_token_carrega_role_e_permissions` e `tests/test_auth.py::test_refresh_reemite_claims_atualizadas`

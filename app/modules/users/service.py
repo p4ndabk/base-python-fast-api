@@ -10,14 +10,16 @@ import uuid
 
 from app.core.exceptions import ConflictError, NotFoundError
 from app.core.security import hash_password
+from app.modules.roles.repository import RoleRepository
 from app.modules.users.models import UserModel
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import UserCreate, UserUpdate
 
 
 class UserService:
-    def __init__(self, repository: UserRepository) -> None:
+    def __init__(self, repository: UserRepository, role_repository: RoleRepository) -> None:
         self.repository = repository
+        self.role_repository = role_repository
 
     async def create(self, data: UserCreate) -> UserModel:
         # RN-USERS-002: e-mail e unico no sistema.
@@ -68,6 +70,19 @@ class UserService:
             user.hashed_password = hash_password(data.password)
         if data.is_active is not None:
             user.is_active = data.is_active
+
+        # RN-USERS-005: role_id ausente do payload nao mexe na role; presente
+        # (mesmo `null`) atualiza. `null` remove a role do usuario.
+        if "role_id" in data.model_fields_set:
+            if (
+                data.role_id is not None
+                and await self.role_repository.get_by_id(data.role_id) is None
+            ):
+                raise NotFoundError(
+                    "Role nao encontrada",
+                    details={"role_id": str(data.role_id), "code": "ROLE_NOT_FOUND"},
+                )
+            user.role_id = data.role_id
 
         await self.repository.session.commit()
         # Recarrega para trazer o `updated_at` novo gerado pelo banco.

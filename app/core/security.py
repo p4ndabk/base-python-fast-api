@@ -26,20 +26,39 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return _pwd_context.verify(plain_password, hashed_password)
 
 
-def _create_token(subject: str, token_type: TokenType, expires_delta: timedelta) -> str:
+def _create_token(
+    subject: str,
+    token_type: TokenType,
+    expires_delta: timedelta,
+    *,
+    extra_claims: dict[str, Any] | None = None,
+) -> str:
     now = datetime.now(UTC)
     payload: dict[str, Any] = {
         "sub": subject,
         "type": token_type,
         "iat": int(now.timestamp()),
         "exp": int((now + expires_delta).timestamp()),
+        **(extra_claims or {}),
     }
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
-def create_access_token(subject: str) -> str:
-    """RN-AUTH-005: vida curta, controlada por ACCESS_TOKEN_EXPIRE_MINUTES."""
-    return _create_token(subject, "access", timedelta(minutes=settings.access_token_expire_minutes))
+def create_access_token(
+    subject: str, *, role: str | None = None, permissions: list[str] | None = None
+) -> str:
+    """RN-AUTH-005: vida curta, controlada por ACCESS_TOKEN_EXPIRE_MINUTES.
+
+    RN-AUTH-006: `role`/`permissions` sao claims informativas (introspeccao
+    do cliente). A autorizacao (`RequirePermission`) NUNCA as le - sempre
+    consulta o banco.
+    """
+    return _create_token(
+        subject,
+        "access",
+        timedelta(minutes=settings.access_token_expire_minutes),
+        extra_claims={"role": role, "permissions": permissions or []},
+    )
 
 
 def create_refresh_token(subject: str) -> str:

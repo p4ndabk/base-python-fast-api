@@ -32,22 +32,27 @@ o que construir; este arquivo e o `base_spec.md` dizem como.
 
 ### Onde ficam os templates
 
-Cada camada tem sua própria pasta em `.claude/skills/`, e **dentro dela** estão
-os três arquivos que você precisa:
+Cada camada tem sua própria pasta em `.claude/skills/`, sempre com `SKILL.md`
+(a regra da camada: o que MUST e o que NEVER) e pelo menos um exemplo. O
+`template.py.tpl` existe quando a camada tem esqueleto repetitivo para copiar;
+`base-migration`, por exemplo, não tem — a migration nasce do
+`--autogenerate`, não de um template.
 
 ```
 .claude/skills/<camada>/
-├── SKILL.md          # a regra da camada: o que MUST e o que NEVER
-├── example.py        # exemplo real e comentado (entidade Product)
-└── template.py.tpl   # esqueleto com placeholders, para copiar
+├── SKILL.md          # obrigatório: o que MUST e o que NEVER
+├── example*.py        # obrigatório: exemplo real e comentado (entidade Product)
+└── template.py.tpl   # quando aplicável: esqueleto com placeholders, para copiar
 ```
 
 Camadas disponíveis: `base-model`, `base-schema`, `base-repository`,
 `base-service`, `base-controller`, `base-router`, `base-tests`,
 `base-migration`, e o roteiro orquestrador `base-new-module`.
 
-Todas as skills deste projeto usam o prefixo `base-` para não colidir com os
-comandos embutidos do Claude Code (`/model`, `/config`, ...).
+Todas as skills deste projeto usam o prefixo `base-` como namespace — evita
+colidir com skills de outros projetos ou plugins instalados globalmente que
+usem nomes genéricos (`model`, `service`, `router`). Skills não são slash
+commands: são selecionadas pelo `description`, não digitadas.
 
 ### Onde ficam as regras de negócio
 

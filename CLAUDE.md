@@ -2,13 +2,14 @@
 
 ## Regra número 1
 
-**Leia [`AGENTS.md`](AGENTS.md) na raiz do projeto antes de escrever qualquer
-linha de código.** Ele contém as regras de arquitetura, os anti-padrões
-proibidos, onde ficam os templates de cada camada e o que fazer quando o
-template que você precisa não existir.
+@AGENTS.md
 
-Não comece a codar sem ter lido. Não improvise um padrão que não esteja lá —
-se não houver precedente, pergunte.
+Contém as regras de arquitetura, os anti-padrões proibidos, onde ficam os
+templates de cada camada e o que fazer quando o template que você precisa
+não existir.
+
+Não improvise um padrão que não esteja lá — se não houver precedente,
+pergunte.
 
 ## Atalhos
 
