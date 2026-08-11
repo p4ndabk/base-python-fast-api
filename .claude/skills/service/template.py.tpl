@@ -1,6 +1,6 @@
 """Regras de negocio de {{entities}}.
 
-Camada SERVICE: onde as regras de `.rules/{{entities}}.md` sao implementadas.
+Camada SERVICE: onde as regras de `.rules/{{entities}}/RULES.md` sao implementadas.
 Cada validacao cita o ID da regra (ex: # RN-{{ENTITIES}}-001) para dar rastreabilidade.
 
 Proibido aqui: HTTPException, Request, select(). Use erros de dominio.

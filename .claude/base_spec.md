@@ -186,7 +186,7 @@ Regras de negócio .....: RN-PRODUCTS-001 (SKU único), RN-PRODUCTS-002 (preço 
 Efeito no banco .......: INSERT em products; migration: SIM
 ```
 
-### Regra escrita antes do código, em `.rules/products.md`
+### Regra escrita antes do código, em `.rules/products/RULES.md`
 ```markdown
 ### RN-PRODUCTS-001 — SKU é único
 **Regra:** não existem dois produtos com o mesmo SKU.

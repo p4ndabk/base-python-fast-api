@@ -1,6 +1,6 @@
 """Regras de negocio de usuarios.
 
-Camada SERVICE: onde as regras de `.rules/users.md` sao implementadas.
+Camada SERVICE: onde as regras de `.rules/users/RULES.md` sao implementadas.
 Cada validacao cita o ID da regra para dar rastreabilidade (grep RN-USERS-002).
 
 Proibido aqui: HTTPException, Request, `select()`. Use erros de dominio.

@@ -21,7 +21,7 @@ pelo router leva a inventar contratos que a camada de baixo não sustenta.
 2. Preencha o **formulário de especificação** de cada rota do módulo e cole na
    sua resposta.
 3. Se alguma rota aplica regra de negócio nova, escreva a regra em
-   `.rules/<modulo>.md` **agora**, com ID (`RN-<MODULO>-001`).
+   `.rules/<modulo>/RULES.md` **agora**, com ID (`RN-<MODULO>-001`) — crie a pasta.
    Se faltar informação para preencher qualquer campo: **pare e pergunte.**
 
 ---

@@ -54,7 +54,10 @@ app/
     ├── users/  CRUD completo — módulo de referência
     └── auth/   register, login, refresh, /me (JWT)
 AGENTS.md       como escrever o código (leitura obrigatória)
-.rules/         regras de negócio versionadas (RN-*)
+.rules/         regras de negócio (RN-*), uma pasta por módulo
+├── _global/RULES.md
+├── users/RULES.md
+└── auth/RULES.md
 .claude/        base_spec.md e uma skill por camada (regra + exemplo + template)
 alembic/        migrations
 tests/          pytest async com httpx

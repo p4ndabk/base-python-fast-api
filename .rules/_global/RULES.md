@@ -3,7 +3,7 @@
 Valem para **todos** os módulos. Ao criar um módulo novo, essas regras já se
 aplicam sem precisar repeti-las no arquivo do módulo.
 
-Formato definido em [README.md](README.md).
+Formato definido em [../README.md](../README.md).
 
 ---
 

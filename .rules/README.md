@@ -7,14 +7,38 @@ Toda regra de negócio do sistema mora aqui, com um identificador estável, e é
 citada no código e no teste que a implementam. Se a regra não está escrita aqui,
 ela **não existe** — não invente regra direto no código.
 
-## Arquivos
+## Estrutura: uma pasta por módulo
 
-| Arquivo | Conteúdo |
+A pasta espelha `app/modules/`. Cada módulo tem a sua, e dentro dela o
+`RULES.md` com as regras daquele módulo.
+
+```
+.rules/
+├── README.md              # este arquivo: formato e convenções
+├── _global/RULES.md       # regras que valem para TODOS os módulos
+├── users/RULES.md         # RN-USERS-001, 002, ...
+├── auth/RULES.md          # RN-AUTH-001, ...
+└── <modulo>/RULES.md      # um diretório por módulo novo
+```
+
+| Pasta | Conteúdo |
 |---|---|
-| `_global.md` | Regras que valem para todos os módulos |
-| `users.md` | Regras do módulo `users` |
-| `auth.md` | Regras do módulo `auth` |
-| `<modulo>.md` | Um arquivo por módulo novo |
+| `_global/` | Regras transversais — valem para todo módulo, sem precisar repetir |
+| `users/` | Regras do módulo `users` |
+| `auth/` | Regras do módulo `auth` |
+
+**`RULES.md` é obrigatório** em cada pasta. A pasta existe (em vez de um arquivo
+solto) para o módulo poder crescer sem inchar um documento único: se um dia
+precisar de um glossário do domínio, um diagrama de estados ou o registro de uma
+decisão, esses arquivos ficam ao lado do `RULES.md`, dentro da pasta do módulo.
+Não crie esses extras "por precaução" — só quando houver conteúdo real.
+
+Ao criar um módulo novo:
+
+```bash
+mkdir -p .rules/<modulo>
+# escreva .rules/<modulo>/RULES.md com a primeira regra (RN-<MODULO>-001)
+```
 
 ## Identificador
 
@@ -69,9 +93,10 @@ Assim, `grep -r "RN-USERS-002" .` mostra a regra, a implementação e o teste.
 
 ## Fluxo ao criar uma regra nova
 
-1. Escreva a regra **aqui primeiro**, com um ID novo.
+1. Escreva a regra em `.rules/<modulo>/RULES.md` **primeiro**, com um ID novo
+   (crie a pasta se o módulo ainda não tiver uma).
 2. Implemente no `service.py` citando o ID no comentário.
 3. Escreva o teste citando o ID no docstring.
-4. Preencha o campo **Onde vive** e **Teste** com os caminhos reais.
+4. Volte e preencha os campos **Onde vive** e **Teste** com os caminhos reais.
 
 Nunca comece pelo passo 2.

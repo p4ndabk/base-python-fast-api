@@ -1,6 +1,6 @@
 # Regras do módulo `auth`
 
-Formato definido em [README.md](README.md). Regras globais em [_global.md](_global.md).
+Formato definido em [../README.md](../README.md). Regras globais em [../_global/RULES.md](../_global/RULES.md).
 
 ---
 

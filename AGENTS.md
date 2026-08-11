@@ -39,6 +39,23 @@ os três arquivos que você precisa:
 Camadas disponíveis: `model`, `schema`, `repository`, `service`, `controller`,
 `router`, `tests`, `migration`, e o roteiro orquestrador `new-module`.
 
+### Onde ficam as regras de negócio
+
+`.rules/` espelha `app/modules/`: **uma pasta por módulo**, cada uma com um
+`RULES.md`.
+
+```
+.rules/
+├── README.md              # formato obrigatório de cada regra
+├── _global/RULES.md       # regras válidas para todos os módulos
+├── users/RULES.md
+└── auth/RULES.md
+```
+
+Módulo novo ganha `.rules/<modulo>/RULES.md`. As regras têm ID (`RN-USERS-002`)
+citado no `service.py` e no teste, então `grep -r RN-USERS-002 .` mostra a
+regra, a implementação e o teste.
+
 Placeholders dos templates:
 
 | Placeholder | Vira | Exemplo |
