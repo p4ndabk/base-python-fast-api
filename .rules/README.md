@@ -26,12 +26,19 @@ A pasta espelha `app/modules/`. Cada módulo tem a sua, e dentro dela o
 | `_global/` | Regras transversais — valem para todo módulo, sem precisar repetir |
 | `users/` | Regras do módulo `users` |
 | `auth/` | Regras do módulo `auth` |
+| `roles/` | Regras do módulo `roles` |
+| `permissions/` | Regras do módulo `permissions` |
 
-**`RULES.md` é obrigatório** em cada pasta. A pasta existe (em vez de um arquivo
-solto) para o módulo poder crescer sem inchar um documento único: se um dia
-precisar de um glossário do domínio, um diagrama de estados ou o registro de uma
-decisão, esses arquivos ficam ao lado do `RULES.md`, dentro da pasta do módulo.
-Não crie esses extras "por precaução" — só quando houver conteúdo real.
+**`RULES.md` é obrigatório** em todo módulo que tem regra de negócio própria.
+A pasta existe (em vez de um arquivo solto) para o módulo poder crescer sem
+inchar um documento único: se um dia precisar de um glossário do domínio, um
+diagrama de estados ou o registro de uma decisão, esses arquivos ficam ao lado
+do `RULES.md`, dentro da pasta do módulo. Não crie esses extras "por
+precaução" — só quando houver conteúdo real.
+
+**Exceção:** módulo sem tabela e sem regra de negócio (ex: `health`, que só
+expõe status de liveness/readiness) não ganha pasta em `.rules/`. Se o módulo
+passar a ter uma regra — mesmo que trivial —, a pasta nasce nesse momento.
 
 Ao criar um módulo novo:
 
@@ -54,7 +61,7 @@ Formato: `RN-<MODULO>-<NNN>` (ex: `RN-USERS-002`).
 
 ## Formato obrigatório de cada regra
 
-Sempre estes seis campos, nesta ordem — nem mais, nem menos:
+Sempre estes cinco campos, nesta ordem — nem mais, nem menos:
 
 ```markdown
 ### RN-USERS-002 — E-mail é único no sistema
@@ -67,7 +74,11 @@ Sempre estes seis campos, nesta ordem — nem mais, nem menos:
 
 - **Regra** — uma frase, no presente, afirmativa. Sem "deveria", sem "talvez".
 - **Quando** — em que operações a regra é avaliada.
-- **Se violada** — a exceção de domínio e o status HTTP resultante.
+- **Se violada** — a consequência da violação. Para regra de domínio (a
+  maioria): a exceção de domínio e o status HTTP resultante. Para regra
+  estrutural em `_global/` que não passa por uma requisição HTTP (ex:
+  `RN-GLOBAL-001`, sobre timestamp): o efeito técnico observável, sem status
+  HTTP — porque não há um.
 - **Onde vive** — o arquivo que implementa. Quase sempre um `service.py`, porque
   essa é a única camada onde regra de negócio pode morar.
 - **Teste** — o teste que prova a regra. Se não existe teste, a regra não está pronta.
