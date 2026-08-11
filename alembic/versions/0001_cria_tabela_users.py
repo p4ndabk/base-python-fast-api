@@ -5,7 +5,7 @@ Revises:
 Create Date: 2026-08-11
 
 Migration inicial. As proximas devem ser geradas com:
-    make revision m="descricao curta"
+    uv run alembic revision --autogenerate -m "descricao curta"
 """
 
 from collections.abc import Sequence

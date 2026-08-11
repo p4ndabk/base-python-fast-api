@@ -96,7 +96,7 @@ que a camada de baixo não sustenta.
 - **MUST** citar o ID da regra no docstring do teste que a cobre.
 
 ### 2.9 Migration (se mexeu em tabela)
-- **MUST** rodar `make revision m="descricao"` e **revisar o arquivo gerado** antes de aplicar.
+- **MUST** rodar `uv run alembic revision --autogenerate -m "descricao"` e **revisar o arquivo gerado** antes de aplicar.
 - **MUST** conferir que `downgrade()` desfaz o que `upgrade()` faz.
 - **NEVER** editar uma migration já aplicada em outro ambiente; crie uma nova.
 

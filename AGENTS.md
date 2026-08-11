@@ -183,24 +183,45 @@ Toda resposta de erro sai como `{"error": {"code", "message", "details"}}` (RN-G
 
 ## 7. Comandos
 
+Todo comando roda por **`uv`**. Não há Makefile, script wrapper nem atalho:
+o comando que você lê aqui é o comando que executa.
+
 ```bash
-make install    # uv sync
-make run        # API em http://localhost:8000/docs
-make test       # uv run pytest
-make lint       # ruff check + format --check
-make check      # lint + test - rode antes de abrir PR
-make migrate    # alembic upgrade head
-make revision m="cria tabela products"
+uv sync                                    # instala as dependencias
+
+uv run uvicorn app.main:app --reload       # API em http://localhost:8000/docs
+
+uv run pytest                              # testes
+uv run pytest -v                           # testes com detalhe
+uv run pytest tests/test_users.py -k nome  # um teste especifico
+
+uv run ruff check .                        # lint
+uv run ruff format .                       # formata
+uv run ruff check --fix .                  # corrige o que da para automatizar
+
+uv run alembic upgrade head                              # aplica migrations
+uv run alembic revision --autogenerate -m "descricao"    # gera migration
+uv run alembic current                                   # revisao atual do banco
+
+docker compose up -d --build               # api + postgres
+docker compose down
+```
+
+**Antes de abrir PR**, os dois que importam:
+
+```bash
+uv run ruff check . && uv run pytest
 ```
 
 Gerenciador de dependências é **`uv`** (nunca `pip install` avulso, nunca
-`requirements.txt`). Testes são **`pytest`** (nunca `unittest`).
+`requirements.txt`; libs novas entram com `uv add` / `uv add --dev`).
+Testes são **`pytest`** (nunca `unittest`).
 
 ---
 
 ## 8. Checklist antes de abrir PR
 
-- [ ] `make check` passa (ruff + pytest)
+- [ ] `uv run ruff check .` limpo e `uv run pytest` verde
 - [ ] Toda regra de negócio nova está em `.rules/` com ID, e o ID é citado no service e no teste
 - [ ] Nenhum item da seção 6 aparece no diff
 - [ ] Rota nova aparece corretamente em `/docs`

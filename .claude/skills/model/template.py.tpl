@@ -4,7 +4,7 @@ Camada MODEL: so mapeamento de tabela. Nenhuma regra de negocio, nenhum Pydantic
 
 DEPOIS DE CRIAR ESTE ARQUIVO:
   1. importe este modulo em `alembic/env.py`
-  2. rode `make revision m="cria tabela {{entities}}"`
+  2. rode `uv run alembic revision --autogenerate -m "cria tabela {{entities}}"`
 """
 
 from sqlalchemy import Boolean, String

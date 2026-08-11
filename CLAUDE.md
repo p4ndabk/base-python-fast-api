@@ -32,9 +32,12 @@ Cada camada só chama a camada imediatamente abaixo. A tabela completa de
 responsabilidades está no `AGENTS.md`.
 
 ```bash
-make run     # http://localhost:8000/docs
-make test    # pytest
-make check   # lint + testes, antes de abrir PR
+uv run uvicorn app.main:app --reload    # http://localhost:8000/docs
+uv run pytest                           # testes
+uv run ruff check . && uv run pytest    # antes de abrir PR
 ```
+
+Todo comando roda por `uv`. Não há Makefile — a lista completa está na seção 7
+do `AGENTS.md`.
 
 Referência viva de como um módulo deve ficar: `app/modules/users/`.

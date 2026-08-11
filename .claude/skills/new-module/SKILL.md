@@ -84,9 +84,9 @@ Sem isso o `--autogenerate` gera uma migration vazia.
 Invoque a skill `migration`.
 
 ```bash
-make revision m="cria tabela products"
+uv run alembic revision --autogenerate -m "cria tabela products"
 # ABRA o arquivo gerado em alembic/versions/ e revise
-make migrate
+uv run alembic upgrade head
 ```
 
 ---
@@ -103,8 +103,8 @@ Invoque a skill `tests`. Crie `tests/test_<modulo>.py` com:
 ## Etapa 6 — Verificação final
 
 ```bash
-make check     # ruff + pytest
-make run       # confira as rotas em http://localhost:8000/docs
+uv run ruff check . && uv run pytest      # tem que estar limpo e verde
+uv run uvicorn app.main:app --reload      # confira as rotas em http://localhost:8000/docs
 ```
 
 Percorra a **Definition of Done** de [`base_spec.md`](../../base_spec.md) item
@@ -116,7 +116,7 @@ por item. Só considere o módulo pronto quando todos estiverem marcados.
 
 ```
 formulário → .rules/ → schemas → models → repository → service → controller
-   → router → v1.py → alembic/env.py → migration → testes → make check
+   → router → v1.py → alembic/env.py → migration → testes → ruff + pytest
 ```
 
 Em caso de dúvida sobre um padrão, o módulo `users` no repositório é a

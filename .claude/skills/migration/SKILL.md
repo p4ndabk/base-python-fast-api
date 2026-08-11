@@ -19,10 +19,10 @@ Migration é o histórico versionado do schema. É o único artefato do projeto 
 # 1. o model já existe em app/modules/<modulo>/models.py
 # 2. IMPORTE o models em alembic/env.py   <- o passo que todo mundo esquece
 # 3. gere
-make revision m="cria tabela products"
+uv run alembic revision --autogenerate -m "cria tabela products"
 # 4. ABRA o arquivo gerado em alembic/versions/ e revise
 # 5. aplique
-make migrate
+uv run alembic upgrade head
 ```
 
 ## Regra nº 1: `--autogenerate` não é confiável sozinho

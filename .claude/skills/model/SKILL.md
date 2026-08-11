@@ -35,6 +35,6 @@ O model é **só o mapeamento da tabela**. Nada mais.
 
 ## Depois de mexer aqui
 1. Importe o `models` do módulo em `alembic/env.py`
-2. `make revision m="descricao"` e **revise** o arquivo gerado
-3. `make migrate`
+2. `uv run alembic revision --autogenerate -m "descricao"` e **revise** o arquivo gerado
+3. `uv run alembic upgrade head`
 4. Vá para a skill `schema`

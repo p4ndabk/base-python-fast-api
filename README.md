@@ -10,17 +10,17 @@ novo seguindo um caminho único e explícito.
 
 ```bash
 cp .env.example .env
-make install          # uv sync
-make up               # sobe api + postgres no docker
-make migrate          # aplica as migrations
+uv sync                             # instala as dependencias
+docker compose up -d --build        # api + postgres
+uv run alembic upgrade head         # aplica as migrations
 ```
 
-Ou local, com o Postgres do compose:
+Ou rodando a API local, com só o Postgres no docker:
 
 ```bash
 docker compose up -d db
-make migrate
-make run              # http://localhost:8000/docs
+uv run alembic upgrade head
+uv run uvicorn app.main:app --reload   # http://localhost:8000/docs
 ```
 
 ## Arquitetura
@@ -91,16 +91,26 @@ a implementam — `grep -r RN-USERS-002 .` mostra os três.
 
 ## Comandos
 
+Todo comando roda por `uv` — sem Makefile, sem script wrapper.
+
 ```bash
-make help       # lista tudo
-make run        # API local com hot-reload
-make test       # pytest
-make lint       # ruff check + format --check
-make check      # lint + test (rode antes do PR)
-make up / down  # docker compose
-make migrate    # alembic upgrade head
-make revision m="cria tabela products"
+uv sync                                   # instala dependencias
+uv add <pacote>                           # adiciona uma lib (--dev para dev)
+
+uv run uvicorn app.main:app --reload      # API local com hot-reload
+uv run pytest                             # testes
+uv run ruff check .                       # lint
+uv run ruff format .                      # formata
+
+uv run alembic upgrade head                            # aplica migrations
+uv run alembic revision --autogenerate -m "descricao"  # gera migration
+
+docker compose up -d --build              # api + postgres
+docker compose down
+docker compose exec db psql -U postgres -d app
 ```
+
+Antes de abrir PR: `uv run ruff check . && uv run pytest`
 
 ## Criando um módulo novo
 
@@ -109,7 +119,7 @@ Resumo:
 
 ```
 formulário (base_spec.md) → .rules/ → schemas → models → repository → service
-  → controller → router → api/v1.py → alembic/env.py → migration → testes → make check
+  → controller → router → api/v1.py → alembic/env.py → migration → testes → ruff + pytest
 ```
 
 Os testes rodam em SQLite em memória por padrão; para usar Postgres:
