@@ -17,6 +17,13 @@ pelo router leva a inventar contratos que a camada de baixo não sustenta.
 
 0. Se ainda não leu nesta sessão, leia [`AGENTS.md`](../../../AGENTS.md) na raiz —
    as regras de arquitetura e os anti-padrões proibidos.
+
+   **Se a tarefa tem spec** em `docs/specs/<ID>-<slug>/`: leia o `SPEC.md` e o
+   `TODO.md` da pasta. O `SPEC.md` já traz regras de negócio (seção 5), contrato
+   (seção 6), banco (seção 7) e critérios de aceite (seção 8) — use como fonte e
+   **não invente nada que contrarie a seção 4 (fora de escopo)**. O `TODO.md`
+   pode conter pendência que se resolve dentro desta tarefa.
+
 1. Leia [`.claude/base_spec.md`](../../base_spec.md).
 2. Preencha o **formulário de especificação** de cada rota do módulo e cole na
    sua resposta.

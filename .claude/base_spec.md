@@ -35,6 +35,10 @@ Paginação .............: N/A (só em listagem)
 
 Regras desta etapa:
 
+- **Se a tarefa tem spec** em `docs/specs/<ID>-<slug>/SPEC.md`, o formulário é
+  preenchido **a partir dela**: seção 6 dá método, path, payload e erros; seção 5
+  dá as regras; seção 7 diz se há migration. Você **MUST** respeitar a seção 4
+  (fora de escopo) — o que está lá não se implementa, mesmo parecendo trivial.
 - Se **qualquer** campo não puder ser preenchido com certeza, você **MUST**
   parar e perguntar ao usuário. **NEVER** adivinhe um contrato de API.
 - Se a rota aplica uma regra de negócio que ainda **não existe** em `.rules/`,

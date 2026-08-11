@@ -54,6 +54,7 @@ app/
     ├── users/  CRUD completo — módulo de referência
     └── auth/   register, login, refresh, /me (JWT)
 AGENTS.md       como escrever o código (leitura obrigatória)
+docs/specs/     uma pasta por tarefa: SPEC.md (o que construir) + TODO.md (pendências)
 .rules/         regras de negócio (RN-*), uma pasta por módulo
 ├── _global/RULES.md
 ├── users/RULES.md
@@ -69,6 +70,8 @@ tests/          pytest async com httpx
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | **comece por aqui** — como escrever o código: camadas, convenções, anti-padrões, onde ficam os templates |
 | [`CLAUDE.md`](CLAUDE.md) | ponteiro curto para o `AGENTS.md` |
+| [`docs/specs/`](docs/specs/README.md) | specs de tarefa vindas do refinamento (o que construir) |
+| [`.claude/task_spec.md`](.claude/task_spec.md) | como preencher uma spec de tarefa |
 | [`.claude/base_spec.md`](.claude/base_spec.md) | o rito obrigatório para criar uma rota |
 | [`.rules/`](.rules/README.md) | **o que** o sistema deve fazer: as regras de negócio |
 | `.claude/skills/<camada>/` | regra + exemplo + template de cada camada |

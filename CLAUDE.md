@@ -15,6 +15,8 @@ se não houver precedente, pergunte.
 | Se você vai... | Leia / invoque |
 |---|---|
 | escrever **qualquer** código | [`AGENTS.md`](AGENTS.md) |
+| implementar uma **tarefa com spec** | `docs/specs/<ID>-<slug>/SPEC.md` + o `TODO.md` da mesma pasta |
+| **escrever** uma spec de tarefa | [`.claude/task_spec.md`](.claude/task_spec.md) |
 | criar ou alterar uma **rota** | [`.claude/base_spec.md`](.claude/base_spec.md) |
 | implementar uma **regra de negócio** | [`.rules/`](.rules/README.md) |
 | criar um **módulo novo** | skill `new-module` |

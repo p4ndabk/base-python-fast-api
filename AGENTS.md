@@ -19,10 +19,16 @@ neste caso": siga a regra.
 | Documento | Responde |
 |---|---|
 | **`AGENTS.md`** (este arquivo) | como escrever o código |
+| [`docs/specs/<ID>-<slug>/SPEC.md`](docs/specs/README.md) | **o que** construir nesta tarefa (vem do refinamento) |
+| [`.claude/task_spec.md`](.claude/task_spec.md) | como preencher uma spec de tarefa |
 | [`.claude/base_spec.md`](.claude/base_spec.md) | o rito obrigatório para criar/alterar uma rota |
 | [`.rules/`](.rules/README.md) | as regras de negócio, com ID rastreável |
 | `.claude/skills/<camada>/` | regra + exemplo + template de cada camada |
 | `CLAUDE.md` | ponteiro curto para este arquivo |
+
+**Se a tarefa tiver uma spec** (`docs/specs/<ID>-<slug>/`), ela é o ponto de
+partida: leia o `SPEC.md` **e** o `TODO.md` da pasta antes de codar. A spec diz
+o que construir; este arquivo e o `base_spec.md` dizem como.
 
 ### Onde ficam os templates
 
