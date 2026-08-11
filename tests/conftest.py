@@ -76,9 +76,25 @@ def user_payload() -> dict[str, str]:
 
 
 @pytest.fixture
+def admin_payload() -> dict[str, str]:
+    # Email diferente de `user_payload` de proposito: `auth_headers` e
+    # `admin_headers` precisam representar usuarios DISTINTOS, senao um
+    # teste que pede as duas fixtures acaba com dois tokens do mesmo
+    # usuario (o segundo /auth/register falha com 409, ignorado em
+    # silencio, e ambos fazem login na mesma conta ja promovida a admin).
+    return {
+        "email": "admin@exemplo.com",
+        "full_name": "Admin Root",
+        "password": "senha-super-secreta",
+    }
+
+
+@pytest.fixture
 async def auth_headers(client: AsyncClient, user_payload: dict[str, str]) -> dict[str, str]:
-    """Registra um usuario e devolve o header Authorization pronto."""
-    await client.post("/auth/register", json=user_payload)
+    """Registra um usuario comum (sem role) e devolve o header Authorization pronto."""
+    register = await client.post("/auth/register", json=user_payload)
+    assert register.status_code == 201, register.json()
+
     response = await client.post(
         "/auth/login",
         json={"email": user_payload["email"], "password": user_payload["password"]},
@@ -89,16 +105,17 @@ async def auth_headers(client: AsyncClient, user_payload: dict[str, str]) -> dic
 
 @pytest.fixture
 async def admin_headers(
-    client: AsyncClient, db_session: AsyncSession, user_payload: dict[str, str]
+    client: AsyncClient, db_session: AsyncSession, admin_payload: dict[str, str]
 ) -> dict[str, str]:
-    """Registra um usuario e o vincula a uma role com todas as permissions do seed.
+    """Registra um usuario proprio e o vincula a uma role com todas as permissions do seed.
 
     Equivalente, em teste, ao seed de producao (migration 0002) + atribuicao
     manual da role "admin" a um usuario (PT-01 do TODO.md da spec 0001):
     aqui a atribuicao e direta no banco porque nao existe rota publica para
     o primeiro bootstrap.
     """
-    await client.post("/auth/register", json=user_payload)
+    register = await client.post("/auth/register", json=admin_payload)
+    assert register.status_code == 201, register.json()
 
     permissions = [
         PermissionModel(code=code.value, description=code.value) for code in PermissionCode
@@ -110,13 +127,13 @@ async def admin_headers(
     # `user.role = role`, nao `user.role_id = role.id`: ver comentario em
     # tests/test_auth.py sobre por que o FK bruto pode deixar `.role` (ja
     # carregado por esta mesma query, lazy="selectin") desatualizado.
-    user = await UserRepository(db_session).get_by_email(user_payload["email"])
+    user = await UserRepository(db_session).get_by_email(admin_payload["email"])
     user.role = role
     await db_session.commit()
 
     response = await client.post(
         "/auth/login",
-        json={"email": user_payload["email"], "password": user_payload["password"]},
+        json={"email": admin_payload["email"], "password": admin_payload["password"]},
     )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}

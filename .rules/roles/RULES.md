@@ -17,7 +17,7 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Regra:** `DELETE /roles/{id}` é rejeitado enquanto existir ao menos um usuário com aquele `role_id`.
 **Quando:** remoção de role.
 **Se violada:** `ConflictError` → HTTP 409, code `ROLE_IN_USE` em `details`.
-**Onde vive:** `app/modules/roles/service.py` (`delete`); reforçado no banco com `ondelete=RESTRICT` na FK `users.role_id`.
+**Onde vive:** `app/modules/roles/service.py` (`delete`, via `UserRepository.count_by_role_id`); reforçado no banco com `ondelete=RESTRICT` na FK `users.role_id`.
 **Teste:** `tests/test_roles.py::test_remove_role_em_uso_retorna_409`
 
 ---
@@ -46,3 +46,12 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Se violada:** `ForbiddenError` → HTTP 403.
 **Onde vive:** `app/api/deps.py` (`RequirePermission`)
 **Teste:** `tests/test_roles.py::test_require_permission_bloqueia_usuario_sem_a_permission` e `tests/test_roles.py::test_require_permission_libera_usuario_com_a_permission`
+
+---
+
+### RN-ROLES-006 — `PUT /roles/{id}/permissions` aceita lista vazia
+**Regra:** `permission_ids` pode ser `[]`; isso substitui o conjunto inteiro de permissions da role por nenhuma. Uma role sem nenhuma permission e um estado valido.
+**Quando:** `PUT /roles/{id}/permissions`.
+**Se violada:** cliente nao teria como remover todas as permissions de uma role.
+**Onde vive:** `app/modules/roles/schemas.py` (`RolePermissionsUpdate.permission_ids`)
+**Teste:** `tests/test_roles.py::test_substitui_permissions_por_lista_vazia`

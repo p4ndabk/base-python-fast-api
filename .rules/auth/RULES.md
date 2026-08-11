@@ -54,4 +54,4 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Quando:** emissão de token (`login`, `refresh`) e toda checagem de `RequirePermission`.
 **Se violada:** não gera erro HTTP — o risco é revogação/troca de role não ter efeito imediato caso a checagem um dia passe a confiar nas claims por engano.
 **Onde vive:** `app/core/security.py` (`create_access_token`) + `app/modules/auth/service.py` (`_issue_tokens`) + `app/api/deps.py` (`RequirePermission`, que ignora as claims)
-**Teste:** `tests/test_auth.py::test_access_token_carrega_role_e_permissions` e `tests/test_auth.py::test_refresh_reemite_claims_atualizadas`
+**Teste:** `tests/test_auth.py::test_access_token_carrega_role_e_permissions`, `tests/test_auth.py::test_refresh_reemite_claims_atualizadas`, `tests/test_auth.py::test_claims_adulteradas_nao_autorizam` e `tests/test_auth.py::test_claims_desatualizadas_nao_impedem_autorizacao`

@@ -5,6 +5,7 @@ from jose import jwt as jose_jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.security import create_access_token
 from app.modules.permissions.models import PermissionModel
 from app.modules.roles.models import RoleModel
 from app.modules.users.repository import UserRepository
@@ -184,6 +185,48 @@ async def test_refresh_reemite_claims_atualizadas(
     claims = _decode(response.json()["access_token"])
     assert claims["role"] == "operator"
     assert claims["permissions"] == ["permissions:read"]
+
+
+async def test_claims_adulteradas_nao_autorizam(
+    client: AsyncClient, db_session: AsyncSession, user_payload: dict[str, str]
+) -> None:
+    """RN-AUTH-006: RequirePermission ignora as claims do token, sempre confere o banco."""
+    await client.post("/auth/register", json=user_payload)
+    user = await UserRepository(db_session).get_by_email(user_payload["email"])
+
+    # Token forjado com claims de admin, mas o usuario no banco nao tem role.
+    forged_token = create_access_token(str(user.id), role="admin", permissions=["roles:manage"])
+    headers = {"Authorization": f"Bearer {forged_token}"}
+
+    response = await client.post("/roles", json={"name": "qualquer"}, headers=headers)
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "FORBIDDEN"
+
+
+async def test_claims_desatualizadas_nao_impedem_autorizacao(
+    client: AsyncClient, db_session: AsyncSession, user_payload: dict[str, str]
+) -> None:
+    """RN-AUTH-006 (caminho inverso): banco autoriza mesmo com claim vazia no token."""
+    await client.post("/auth/register", json=user_payload)
+
+    permission = PermissionModel(code="roles:manage", description="Gerenciar roles")
+    role = RoleModel(name="admin", description="Acesso total", permissions=[permission])
+    db_session.add_all([permission, role])
+    await db_session.flush()
+
+    user = await UserRepository(db_session).get_by_email(user_payload["email"])
+    user.role = role
+    await db_session.commit()
+
+    # Token forjado como se tivesse sido emitido ANTES da promocao a admin
+    # (claims vazias) - a checagem deve ir ao banco, nao a claim do token.
+    stale_token = create_access_token(str(user.id), role=None, permissions=[])
+    headers = {"Authorization": f"Bearer {stale_token}"}
+
+    response = await client.post("/roles", json={"name": "operator"}, headers=headers)
+
+    assert response.status_code == 201
 
 
 async def test_usuario_inativo_nao_autentica(

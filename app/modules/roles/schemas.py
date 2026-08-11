@@ -34,6 +34,10 @@ class RoleRead(RoleBase):
 
 
 class RolePermissionsUpdate(BaseModel):
-    """Substitui de uma vez o conjunto de permissions da role."""
+    """Substitui de uma vez o conjunto de permissions da role.
 
-    permission_ids: list[uuid.UUID] = Field(..., min_length=1)
+    Lista vazia e valida: PUT substitui o conjunto inteiro, e uma role sem
+    nenhuma permission e um estado legitimo (RN-ROLES-006).
+    """
+
+    permission_ids: list[uuid.UUID] = Field(default_factory=list)

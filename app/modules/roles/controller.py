@@ -13,11 +13,14 @@ from app.modules.permissions.repository import PermissionRepository
 from app.modules.roles.repository import RoleRepository
 from app.modules.roles.schemas import RoleCreate, RolePermissionsUpdate, RoleRead, RoleUpdate
 from app.modules.roles.service import RoleService
+from app.modules.users.repository import UserRepository
 
 
 class RoleController:
     def __init__(self, session: AsyncSession) -> None:
-        self.service = RoleService(RoleRepository(session), PermissionRepository(session))
+        self.service = RoleService(
+            RoleRepository(session), PermissionRepository(session), UserRepository(session)
+        )
 
     async def create(self, data: RoleCreate) -> RoleRead:
         role = await self.service.create(data)

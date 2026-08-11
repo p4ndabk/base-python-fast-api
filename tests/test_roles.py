@@ -72,6 +72,33 @@ async def test_substitui_permissions_da_role(
     assert codes == {"products:create"}
 
 
+async def test_substitui_permissions_por_lista_vazia(
+    client: AsyncClient, admin_headers: dict[str, str], db_session: AsyncSession
+) -> None:
+    """RN-ROLES-006: PUT com permission_ids=[] remove todas as permissions da role."""
+    created = await client.post("/roles", json={"name": "operator"}, headers=admin_headers)
+    role_id = created.json()["id"]
+
+    permission = PermissionModel(code="products:create", description="Criar produto")
+    db_session.add(permission)
+    await db_session.commit()
+
+    await client.put(
+        f"/roles/{role_id}/permissions",
+        json={"permission_ids": [str(permission.id)]},
+        headers=admin_headers,
+    )
+
+    response = await client.put(
+        f"/roles/{role_id}/permissions",
+        json={"permission_ids": []},
+        headers=admin_headers,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["permissions"] == []
+
+
 async def test_atribuir_permission_inexistente_retorna_404(
     client: AsyncClient, admin_headers: dict[str, str]
 ) -> None:

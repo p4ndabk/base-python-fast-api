@@ -51,15 +51,6 @@ class RoleRepository:
         await self.session.flush()
         return role
 
-    async def count_users_with_role(self, role_id: uuid.UUID) -> int:
-        # RN-ROLES-002: usado para bloquear remocao de role em uso.
-        from app.modules.users.models import UserModel
-
-        result = await self.session.execute(
-            select(func.count()).select_from(UserModel).where(UserModel.role_id == role_id)
-        )
-        return int(result.scalar_one())
-
     async def list(self, *, limit: int, offset: int) -> list[RoleModel]:
         # Definido por ultimo na classe de proposito: um metodo chamado `list`
         # vira nome local do corpo da classe e sombreia o builtin `list` nas

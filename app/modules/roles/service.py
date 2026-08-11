@@ -12,14 +12,19 @@ from app.modules.permissions.repository import PermissionRepository
 from app.modules.roles.models import RoleModel
 from app.modules.roles.repository import RoleRepository
 from app.modules.roles.schemas import RoleCreate, RolePermissionsUpdate, RoleUpdate
+from app.modules.users.repository import UserRepository
 
 
 class RoleService:
     def __init__(
-        self, repository: RoleRepository, permission_repository: PermissionRepository
+        self,
+        repository: RoleRepository,
+        permission_repository: PermissionRepository,
+        user_repository: UserRepository,
     ) -> None:
         self.repository = repository
         self.permission_repository = permission_repository
+        self.user_repository = user_repository
 
     async def create(self, data: RoleCreate) -> RoleModel:
         # RN-ROLES-001: nome da role e unico.
@@ -72,7 +77,7 @@ class RoleService:
         role = await self.get(role_id)
 
         # RN-ROLES-002: role em uso nao pode ser removida.
-        if await self.repository.count_users_with_role(role_id) > 0:
+        if await self.user_repository.count_by_role_id(role_id) > 0:
             raise ConflictError(
                 "Role esta em uso por um ou mais usuarios", details={"code": "ROLE_IN_USE"}
             )

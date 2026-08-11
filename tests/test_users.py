@@ -170,9 +170,9 @@ async def test_user_sem_role_traz_role_null(
 
 
 async def test_atribuir_role_inexistente_retorna_404(
-    client: AsyncClient, auth_headers: dict[str, str]
+    client: AsyncClient, admin_headers: dict[str, str]
 ) -> None:
-    """RN-USERS-005: role_id que nao existe e rejeitado."""
+    """RN-USERS-005: role_id que nao existe e rejeitado (usuario ja com users:manage)."""
     created = await client.post(
         "/users",
         json={
@@ -184,11 +184,77 @@ async def test_atribuir_role_inexistente_retorna_404(
     user_id = created.json()["id"]
 
     response = await client.patch(
-        f"/users/{user_id}", json={"role_id": str(uuid.uuid4())}, headers=auth_headers
+        f"/users/{user_id}", json={"role_id": str(uuid.uuid4())}, headers=admin_headers
     )
 
     assert response.status_code == 404
     assert response.json()["error"]["details"]["code"] == "ROLE_NOT_FOUND"
+
+
+async def test_atribuir_role_sem_permission_retorna_403(
+    client: AsyncClient, auth_headers: dict[str, str]
+) -> None:
+    """RN-USERS-007: alterar role_id exige a permission users:manage."""
+    created = await client.post(
+        "/users",
+        json={
+            "email": "operador3@exemplo.com",
+            "full_name": "Operador 3",
+            "password": "senha12345",
+        },
+    )
+    user_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/users/{user_id}", json={"role_id": str(uuid.uuid4())}, headers=auth_headers
+    )
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "FORBIDDEN"
+
+
+async def test_remover_role_com_permission_funciona(
+    client: AsyncClient, admin_headers: dict[str, str]
+) -> None:
+    """RN-USERS-005 + RN-USERS-007: role_id = null remove a role, com permission."""
+    role = await client.post("/roles", json={"name": "temp-role"}, headers=admin_headers)
+    role_id = role.json()["id"]
+
+    created = await client.post(
+        "/users",
+        json={
+            "email": "removerole@exemplo.com",
+            "full_name": "Remove Role",
+            "password": "senha12345",
+        },
+    )
+    user_id = created.json()["id"]
+    await client.patch(f"/users/{user_id}", json={"role_id": role_id}, headers=admin_headers)
+
+    response = await client.patch(
+        f"/users/{user_id}", json={"role_id": None}, headers=admin_headers
+    )
+
+    assert response.status_code == 200
+    assert response.json()["role_id"] is None
+
+
+async def test_usuario_nao_eleva_o_proprio_privilegio(
+    client: AsyncClient, auth_headers: dict[str, str], admin_headers: dict[str, str]
+) -> None:
+    """RN-USERS-007: usuario comum nao consegue se atribuir uma role privilegiada."""
+    admin_me = await client.get("/auth/me", headers=admin_headers)
+    admin_role_id = admin_me.json()["role_id"]
+
+    me = await client.get("/auth/me", headers=auth_headers)
+    my_id = me.json()["id"]
+
+    response = await client.patch(
+        f"/users/{my_id}", json={"role_id": admin_role_id}, headers=auth_headers
+    )
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "FORBIDDEN"
 
 
 async def test_remove_usuario(client: AsyncClient, auth_headers: dict[str, str]) -> None:
