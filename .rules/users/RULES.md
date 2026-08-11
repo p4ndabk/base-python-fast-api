@@ -55,3 +55,12 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Se violada:** cliente precisaria de um `GET /roles/{role_id}` extra para saber o nome da role e as permissions do usuário.
 **Onde vive:** `app/modules/users/schemas.py` (`UserRead.role`)
 **Teste:** `tests/test_users.py::test_user_read_traz_role_aninhada`
+
+---
+
+### RN-USERS-007 — Alterar `role_id` exige a permission `users:manage`
+**Regra:** `PATCH /users/{id}` so aceita o campo `role_id` no payload (atribuir, trocar ou remover) se o usuario autenticado tiver a permission `PermissionCode.USERS_MANAGE`. Sem essa permission, o campo `role_id` no payload bloqueia a requisicao inteira, mesmo que os outros campos fossem validos. Usuario sem `users:manage` nao pode alterar a propria role nem a de terceiros.
+**Quando:** atualizacao de usuario com o campo `role_id` presente no payload (mesmo `null`).
+**Se violada:** `ForbiddenError` → HTTP 403.
+**Onde vive:** `app/modules/users/router.py` (`RequirePermission(PermissionCode.USERS_MANAGE)`, chamado apenas quando `"role_id" in data.model_fields_set`)
+**Teste:** `tests/test_users.py::test_atribuir_role_sem_permission_retorna_403`, `tests/test_users.py::test_usuario_nao_eleva_o_proprio_privilegio`

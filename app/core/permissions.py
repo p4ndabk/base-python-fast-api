@@ -9,5 +9,11 @@ from enum import StrEnum
 
 
 class PermissionCode(StrEnum):
+    # roles
     ROLES_MANAGE = "roles:manage"
+
+    # permissions
     PERMISSIONS_READ = "permissions:read"
+
+    # users
+    USERS_MANAGE = "users:manage"

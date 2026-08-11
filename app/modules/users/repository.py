@@ -37,6 +37,12 @@ class UserRepository:
         result = await self.session.execute(select(func.count()).select_from(UserModel))
         return int(result.scalar_one())
 
+    async def count_by_role_id(self, role_id: uuid.UUID) -> int:
+        result = await self.session.execute(
+            select(func.count()).select_from(UserModel).where(UserModel.role_id == role_id)
+        )
+        return int(result.scalar_one())
+
     async def add(self, user: UserModel) -> UserModel:
         self.session.add(user)
         await self.session.flush()
