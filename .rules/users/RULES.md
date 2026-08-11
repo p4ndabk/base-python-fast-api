@@ -37,3 +37,21 @@ Formato definido em [../README.md](../README.md). Regras globais em [../_global/
 **Se violada:** `UnauthorizedError` → HTTP 401.
 **Onde vive:** `app/modules/users/router.py` (dependência `CurrentUserDep`)
 **Teste:** `tests/test_users.py::test_lista_sem_token_retorna_401`
+
+---
+
+### RN-USERS-005 — `role_id` informado em atualização precisa existir
+**Regra:** se `PATCH /users/{id}` informa `role_id` (não `null`), a role precisa existir. `role_id = null` sempre é aceito (remove a role do usuário).
+**Quando:** atualização de usuário com o campo `role_id` presente no payload.
+**Se violada:** `NotFoundError` → HTTP 404, code `ROLE_NOT_FOUND` em `details`.
+**Onde vive:** `app/modules/users/service.py` (`update`)
+**Teste:** `tests/test_users.py::test_atribuir_role_inexistente_retorna_404`
+
+---
+
+### RN-USERS-006 — `UserRead` traz a role aninhada, não só o `role_id`
+**Regra:** todo `UserRead` (`GET /users`, `GET /users/{id}`, `PATCH /users/{id}`, `POST /users`, `GET /auth/me`) inclui `role_id` **e** `role` (objeto completo, com `name`, `description` e `permissions`), ou `null` se o usuário não tiver role.
+**Quando:** toda resposta que serializa um usuário.
+**Se violada:** cliente precisaria de um `GET /roles/{role_id}` extra para saber o nome da role e as permissions do usuário.
+**Onde vive:** `app/modules/users/schemas.py` (`UserRead.role`)
+**Teste:** `tests/test_users.py::test_user_read_traz_role_aninhada`
