@@ -1,5 +1,5 @@
 ---
-name: controller
+name: base-controller
 description: Como escrever a camada de controller (orquestração entre rota e service) deste projeto. Use ao ligar uma rota ao service e converter model em schema de saída em app/modules/<modulo>/controller.py.
 ---
 
@@ -45,4 +45,4 @@ esse caso, quem define status code é o `router.py`.
 5. Criar o repository dentro de cada método em vez de uma vez no `__init__`.
 
 ## Depois de mexer aqui
-Vá para a skill `router`.
+Vá para a skill `base-router`.

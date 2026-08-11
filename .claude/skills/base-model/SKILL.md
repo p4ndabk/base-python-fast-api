@@ -1,5 +1,5 @@
 ---
-name: model
+name: base-model
 description: Como escrever a camada de model (tabela SQLAlchemy) deste projeto. Use ao criar ou alterar uma tabela, adicionar coluna, índice ou relacionamento em app/modules/<modulo>/models.py.
 ---
 
@@ -37,4 +37,4 @@ O model é **só o mapeamento da tabela**. Nada mais.
 1. Importe o `models` do módulo em `alembic/env.py`
 2. `uv run alembic revision --autogenerate -m "descricao"` e **revise** o arquivo gerado
 3. `uv run alembic upgrade head`
-4. Vá para a skill `schema`
+4. Vá para a skill `base-schema`

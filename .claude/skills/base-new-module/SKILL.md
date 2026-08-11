@@ -1,5 +1,5 @@
 ---
-name: new-module
+name: base-new-module
 description: Roteiro completo para criar um módulo novo (ex. products, orders) neste projeto FastAPI, do formulário de especificação até os testes passando. Use sempre que precisar adicionar uma entidade ou conjunto de rotas novo.
 ---
 
@@ -51,12 +51,12 @@ substitua os placeholders e ajuste ao seu caso.
 
 | # | Skill | Arquivo criado |
 |---|---|---|
-| 1 | `schema` | `app/modules/<modulo>/schemas.py` |
-| 2 | `model` | `app/modules/<modulo>/models.py` |
-| 3 | `repository` | `app/modules/<modulo>/repository.py` |
-| 4 | `service` | `app/modules/<modulo>/service.py` |
-| 5 | `controller` | `app/modules/<modulo>/controller.py` |
-| 6 | `router` | `app/modules/<modulo>/router.py` |
+| 1 | `base-schema` | `app/modules/<modulo>/schemas.py` |
+| 2 | `base-model` | `app/modules/<modulo>/models.py` |
+| 3 | `base-repository` | `app/modules/<modulo>/repository.py` |
+| 4 | `base-service` | `app/modules/<modulo>/service.py` |
+| 5 | `base-controller` | `app/modules/<modulo>/controller.py` |
+| 6 | `base-router` | `app/modules/<modulo>/router.py` |
 
 Placeholders dos templates:
 
@@ -88,7 +88,7 @@ Sem isso o `--autogenerate` gera uma migration vazia.
 
 ## Etapa 4 — Migration
 
-Invoque a skill `migration`.
+Invoque a skill `base-migration`.
 
 ```bash
 uv run alembic revision --autogenerate -m "cria tabela products"
@@ -100,7 +100,7 @@ uv run alembic upgrade head
 
 ## Etapa 5 — Testes
 
-Invoque a skill `tests`. Crie `tests/test_<modulo>.py` com:
+Invoque a skill `base-tests`. Crie `tests/test_<modulo>.py` com:
 - um teste de sucesso por rota;
 - um teste para **cada** erro listado no formulário da Etapa 0;
 - o ID da regra no docstring do teste que a cobre.

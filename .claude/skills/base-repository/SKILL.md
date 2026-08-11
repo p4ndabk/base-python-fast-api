@@ -1,5 +1,5 @@
 ---
-name: repository
+name: base-repository
 description: Como escrever a camada de repository (acesso a dados com SQLAlchemy async) deste projeto. Use ao criar consultas, paginação, inserção ou remoção em app/modules/<modulo>/repository.py.
 ---
 
@@ -48,4 +48,4 @@ duas escritas numa única transação atômica.
 6. N+1: carregar relacionamento em loop. Use `selectinload()` quando precisar do relacionamento.
 
 ## Depois de mexer aqui
-Vá para a skill `service`.
+Vá para a skill `base-service`.

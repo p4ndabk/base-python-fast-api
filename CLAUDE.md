@@ -19,8 +19,8 @@ se não houver precedente, pergunte.
 | **escrever** uma spec de tarefa | [`.claude/task_spec.md`](.claude/task_spec.md) |
 | criar ou alterar uma **rota** | [`.claude/base_spec.md`](.claude/base_spec.md) |
 | implementar uma **regra de negócio** | [`.rules/`](.rules/README.md) |
-| criar um **módulo novo** | skill `new-module` |
-| escrever **uma camada** | skill `model`, `schema`, `repository`, `service`, `controller`, `router`, `tests` ou `migration` |
+| criar um **módulo novo** | skill `base-new-module` |
+| escrever **uma camada** | skill `base-model`, `base-schema`, `base-repository`, `base-service`, `base-controller`, `base-router`, `base-tests` ou `base-migration` |
 
 ## O essencial
 

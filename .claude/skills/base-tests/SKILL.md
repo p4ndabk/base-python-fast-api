@@ -1,5 +1,5 @@
 ---
-name: tests
+name: base-tests
 description: Como escrever testes neste projeto (pytest async, httpx AsyncClient, fixtures de banco). Use ao testar rotas, regras de negócio ou ao investigar por que um teste falha em tests/test_<modulo>.py.
 ---
 

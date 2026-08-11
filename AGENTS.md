@@ -42,8 +42,12 @@ os três arquivos que você precisa:
 └── template.py.tpl   # esqueleto com placeholders, para copiar
 ```
 
-Camadas disponíveis: `model`, `schema`, `repository`, `service`, `controller`,
-`router`, `tests`, `migration`, e o roteiro orquestrador `new-module`.
+Camadas disponíveis: `base-model`, `base-schema`, `base-repository`,
+`base-service`, `base-controller`, `base-router`, `base-tests`,
+`base-migration`, e o roteiro orquestrador `base-new-module`.
+
+Todas as skills deste projeto usam o prefixo `base-` para não colidir com os
+comandos embutidos do Claude Code (`/model`, `/config`, ...).
 
 ### Onde ficam as regras de negócio
 
@@ -125,13 +129,13 @@ legível como documentação. Quebrar a ordem faz o código voltar a ser um
 
 | Quero... | Skill | Arquivo que edito |
 |---|---|---|
-| criar um módulo inteiro | `new-module` | `app/modules/<modulo>/` |
-| criar/alterar uma rota | leia `base_spec.md`, skill `router` | `app/modules/<modulo>/router.py` |
-| criar uma tabela | skill `model` + `migration` | `models.py` + `alembic/versions/` |
-| mudar o corpo de entrada/saída | skill `schema` | `schemas.py` |
-| escrever uma consulta ao banco | skill `repository` | `repository.py` |
-| implementar uma regra de negócio | skill `service` + `.rules/` | `service.py` |
-| escrever teste | skill `tests` | `tests/test_<modulo>.py` |
+| criar um módulo inteiro | `base-new-module` | `app/modules/<modulo>/` |
+| criar/alterar uma rota | leia `base_spec.md`, skill `base-router` | `app/modules/<modulo>/router.py` |
+| criar uma tabela | skill `base-model` + `base-migration` | `models.py` + `alembic/versions/` |
+| mudar o corpo de entrada/saída | skill `base-schema` | `schemas.py` |
+| escrever uma consulta ao banco | skill `base-repository` | `repository.py` |
+| implementar uma regra de negócio | skill `base-service` + `.rules/` | `service.py` |
+| escrever teste | skill `base-tests` | `tests/test_<modulo>.py` |
 | adicionar variável de ambiente | — | `app/core/config.py` + `.env.example` |
 | adicionar erro de domínio novo | — | `app/core/exceptions.py` |
 | registrar o router de um módulo novo | — | `app/api/v1.py` |

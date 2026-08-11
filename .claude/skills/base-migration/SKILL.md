@@ -1,5 +1,5 @@
 ---
-name: migration
+name: base-migration
 description: Como criar, revisar e aplicar migrations Alembic neste projeto. Use ao criar tabela, adicionar/remover coluna ou índice, ou quando o autogenerate gerar uma migration vazia ou errada.
 ---
 

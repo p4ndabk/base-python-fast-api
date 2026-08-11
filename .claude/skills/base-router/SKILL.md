@@ -1,5 +1,5 @@
 ---
-name: router
+name: base-router
 description: Como escrever a camada de router (declaração das rotas FastAPI) deste projeto. Use ao criar ou alterar endpoints, status codes, response_model, autenticação ou parâmetros de query em app/modules/<modulo>/router.py.
 ---
 
@@ -56,4 +56,4 @@ Proibido: `/products/create-product`, `/getProducts`, `/product`.
 
 ## Depois de mexer aqui
 1. Registre o router em `app/api/v1.py`
-2. Vá para a skill `tests`
+2. Vá para a skill `base-tests`

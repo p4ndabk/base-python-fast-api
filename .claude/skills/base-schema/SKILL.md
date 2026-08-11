@@ -1,5 +1,5 @@
 ---
-name: schema
+name: base-schema
 description: Como escrever a camada de schema (contratos Pydantic de entrada e saída) deste projeto. Use ao definir o corpo de request/response de uma rota, validação de campo ou paginação em app/modules/<modulo>/schemas.py.
 ---
 
@@ -43,4 +43,4 @@ Schema é o **contrato da API**. É o que aparece no `/docs` e o que o cliente v
 5. Usar `float` para dinheiro — use `Decimal`.
 
 ## Depois de mexer aqui
-Vá para a skill `repository`.
+Vá para a skill `base-repository`.

@@ -1,5 +1,5 @@
 ---
-name: service
+name: base-service
 description: Como escrever a camada de service (regra de negócio) deste projeto. Use ao implementar validações que dependem do banco, decisões de domínio, transações ou qualquer regra RN-* de .rules/ em app/modules/<modulo>/service.py.
 ---
 
@@ -50,4 +50,4 @@ Proibido: importar `router.py` ou `controller.py` de outro módulo.
 Veja `app/modules/auth/service.py` como referência.
 
 ## Depois de mexer aqui
-Vá para a skill `controller`.
+Vá para a skill `base-controller`.
